@@ -1,11 +1,18 @@
 {
     "name": "rs-task6-app",
     "version": "1.0.0",
+    "description": "",
     "main": "index.js",
-    "scripts": {
-        "start": "node index.js"
-    },
     "dependencies": {
-        "express": "^4.17.1"
+      "express": "^4.17.1",
+      "body-parser": "1.19.0"
+    },
+    "devDependencies": {
+      "jest": "^26.6.3",
+      "supertest": "^6.1.3",
+    },
+    "scripts": {
+      "start": "node index.js",
+      "test": "jest"
     }
-}
+  }
