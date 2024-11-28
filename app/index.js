@@ -6,6 +6,10 @@ app.get('/', (req, res) => {
   res.send('Simple test app');
 });
 
-app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`App listening at http://localhost:${port}`);
+  });
+} else {
+  module.exports = app; // Exportable application for testing
+}
