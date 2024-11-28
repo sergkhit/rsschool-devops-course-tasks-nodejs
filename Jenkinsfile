@@ -13,12 +13,21 @@ pipeline {
         HELM_CHART_DIR = "helm-chart"
         AWS_REGION = "us-east-1"
     }
+
     stages {
+
+    stage('Install Docker') {
+            steps {
+                sh 'apt-get update && apt-get install -y docker.io'
+            }
+        }
+
         stage('Build') {
             steps {
                 script {
                     // docker build
                     echo "Build Docker image"
+
                     sh """
                     docker version
                     sh 'docker build -t nodejs-app .
