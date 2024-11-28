@@ -108,6 +108,7 @@ pipeline {
                        sh '''
                       cd nodejs/app
                       pwd
+                      npm test -- --clearCache
                       npm test
                       '''
                     }
