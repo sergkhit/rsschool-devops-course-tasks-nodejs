@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('..index'); 
+const app = require('./index'); 
 
 describe('GET /', () => {
   it('respond with Simple test app', (done) => {
