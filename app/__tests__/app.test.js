@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('./index'); // Убедитесь, что вы экспортировали app из index.js
+const app = require('../app/index'); 
 
 describe('GET /', () => {
   it('respond with Simple test app', (done) => {
