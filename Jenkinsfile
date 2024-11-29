@@ -63,7 +63,7 @@ pipeline {
         DOCKERFILE_BRANCH = 'main'
         GIT_REPO = 'https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git' 
         SONAR_HOST_URL = 'https://sonarcloud.io'
-        SONAR_PROJECT_KEY = 'rstask6'
+        SONAR_PROJECT_KEY = 'sonar-token'
         SONAR_ORGANIZATION = 'rstask6khit'
         SONAR_TOKEN = credentials('sonar-token')
         SONAR_SCANNER_VERSION = '6.2.1.4610'
@@ -118,8 +118,10 @@ pipeline {
             steps {
                 git url: "${GITHUB_REPO}", branch: "${GITHUB_BRANCH}" // Checkout here as well
                 container('docker') {
-                    sh "docker build -t rs-task6-builder -f Dockerfile --target builder ."  
-                    sh "docker run --rm rs-task6-builder go test -v ./..." 
+                    // sh "docker build -t rs-task6-builder -f Dockerfile --target builder ."  
+                    // sh "docker run --rm rs-task6-builder go test -v ./..." 
+                    sh "docker build -t rs-task6-builder -f nodejs/Dockerfile --target builder nodejs"
+                    sh "docker run --rm rs-task6-builder npm test"
                 }
             }
         }
