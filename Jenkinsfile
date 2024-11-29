@@ -14,11 +14,22 @@ pipeline {
             command:
             - cat
             tty: true
+            resources:
+              requests:
+                memory: "256Mi"
+                ephemeral-storage: "512Mi"
+    limits:
+      memory: "512Mi"
+      ephemeral-storage: "1Gi"
           - name: docker
             image: docker:24.0.5
             command:
             - cat
             tty: true
+            resources:
+              requests:
+                memory: "256Mi"
+                ephemeral-storage: "512Mi"            
             volumeMounts:
             - name: docker-socket
               mountPath: /var/run/docker.sock
@@ -27,6 +38,10 @@ pipeline {
             command:
             - cat
             tty: true
+            resources:
+              requests:
+                memory: "256Mi"
+                ephemeral-storage: "512Mi"
           volumes:
           - name: docker-socket
             hostPath:
@@ -73,8 +88,6 @@ pipeline {
         DOCKERFILE_REPO = 'https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs'
         DOCKERFILE_BRANCH = 'main'
         GIT_REPO = 'https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git' 
-        // GITHUB_REPO = 'https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs'
-        // GITHUB_BRANCH = 'main'
         SONAR_HOST_URL = 'https://sonarcloud.io'
         SONAR_PROJECT_KEY = 'rstask6'
         SONAR_ORGANIZATION = 'rstask6khit'
