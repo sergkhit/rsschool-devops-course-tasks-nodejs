@@ -8,13 +8,15 @@ RUN mkdir -p /app
 WORKDIR /app
 
 # Copy dependency definitions
-COPY package*.json /app/
+# COPY package*.json /app/
+COPY app/package*.json .
 
 # Install dependencies
 RUN npm install
 
 # Get all the code needed to run the app
-COPY . /app/
+# COPY . /app/
+COPY app/ .
 
 ARG APP_SERVER_PORT
 
