@@ -502,4 +502,3 @@ spec:
             body: "Job: ${env.JOB_NAME} \n Build Number: ${env.BUILD_NUMBER}"
         }
     }
-}
