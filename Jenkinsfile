@@ -1,44 +1,44 @@
 pipeline {
-  agent {
-    kubernetes {
-      label 'docker-build'
-      yaml '''
-        apiVersion: v1
-        kind: Pod
-        spec:
-          serviceAccountName: jenkins
-        spec:
-          containers:
-          - name: node
-            image: timbru31/node-alpine-git
-            command:
-            - cat
-            tty: true
-          - name: docker
-            image: docker:dind
-            securityContext:
-              privileged: true
-          - name: helm
-            image: alpine/helm:3.11.1  # Helm container
-              command: ['cat']
-              tty: true
+    agent {
+        kubernetes {
+            label 'docker-build'
+            yaml '''
+            apiVersion: v1
+            kind: Pod
+            spec:
+              serviceAccountName: jenkins
+              containers:
+              - name: node
+                image: timbru31/node-alpine-git
+                command:
+                - cat
+                tty: true
+              - name: docker
+                image: docker:dind
+                securityContext:
+                  privileged: true
+              - name: helm
+                image: alpine/helm:3.11.1  # Helm container
+                command: ['cat']            
+                tty: true                   
             '''
-      retries 2
+            retries 2
+        }
     }
-  }
     parameters {
-    booleanParam(name: 'SHOULD_PUSH_TO_ECR', defaultValue: false, description: 'chnange on true for push Docker image to ECR')
-  }
+        booleanParam(name: 'SHOULD_PUSH_TO_ECR', defaultValue: false, description: 'chnange on true for push Docker image to ECR')
+    }
 
     triggers {
-      GenericTrigger(
-        causeString: 'Triggered by GitHub Push',
-        token: 'my-git-token', 
-        printPostContent: true,   
-        printContributedVariables: true, 
-        silentResponse: false
-    )
-  }
+        GenericTrigger(
+            causeString: 'Triggered by GitHub Push',
+            token: 'my-git-token',
+            printPostContent: true,
+            printContributedVariables: true,
+            silentResponse: false
+        )
+    }
+
 
     environment {
         ECR_REGISTRY = "905418277051.dkr.ecr.us-east-1.amazonaws.com"
@@ -123,7 +123,7 @@ pipeline {
                 }
             }
         }
-
+    
 
         // stage('Checkout') {
         //     steps {
@@ -349,5 +349,5 @@ pipeline {
     //         // Failure Notifications
     //         echo 'Pipeline failed!'
     //     }
-    // }
-// }
+    }
+}
