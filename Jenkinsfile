@@ -84,9 +84,6 @@ pipeline {
         K3S_NAMESPACE = "jenkins"
         HELM_CHART_DIR = "helm-chart"
         AWS_REGION = "us-east-1"
-        // SONAR_PROJECT_KEY = "rstask6"
-        // SONAR_LOGIN = "sqp_nnn"
-        // SONAR_HOST_URL = "http://3.80.253.45:9000"
         WORKSPACE = "./"
         JAVA_HOME = '/opt/java/openjdk'  // Make sure this points to your Java installation
         PATH = "${JAVA_HOME}/bin:${PATH}"
@@ -218,36 +215,36 @@ pipeline {
         //     }
         // }   
 
-        stage('SonarQube Analysis') {
-            steps {
-                container('docker') {
-                    script {
-                    // Install OpenJDK 17 if necessary (already in the docker container)
-                    sh """
-                      apk add --no-cache -q openjdk17
-                      export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-                      export PATH=\$JAVA_HOME/bin:\$PATH
-                      java -version
-                    """
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         container('docker') {
+        //             script {
+        //             // Install OpenJDK 17 if necessary (already in the docker container)
+        //             sh """
+        //               apk add --no-cache -q openjdk17
+        //               export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+        //               export PATH=\$JAVA_HOME/bin:\$PATH
+        //               java -version
+        //             """
 
-                    // Use SonarQubeScanner tool configured in Jenkins
-                    def scannerHome = tool 'SonarQubeScanner'
+        //             // Use SonarQubeScanner tool configured in Jenkins
+        //             def scannerHome = tool 'SonarQubeScanner'
 
-                        // Run SonarQube analysis with appropriate parameters
-                        withSonarQubeEnv('SonarQube') {
-                          sh """
-                            ${scannerHome}/bin/sonar-scanner \
-                              -Dsonar.projectKey=rstask6 \
-                              -Dsonar.sources=. \
-                              -Dsonar.host.url=https://sonarcloud.io \
-                              -Dsonar.login=${SONAR_TOKEN} \
-                              -Dsonar.organization=${SONAR_ORGANIZATION}
-                          """
-                        }
-                    }
-                }
-            }
-        }
+        //                 // Run SonarQube analysis with appropriate parameters
+        //                 withSonarQubeEnv('SonarQube') {
+        //                   sh """
+        //                     ${scannerHome}/bin/sonar-scanner \
+        //                       -Dsonar.projectKey=rstask6 \
+        //                       -Dsonar.sources=. \
+        //                       -Dsonar.host.url=https://sonarcloud.io \
+        //                       -Dsonar.login=${SONAR_TOKEN} \
+        //                       -Dsonar.organization=${SONAR_ORGANIZATION}
+        //                   """
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Install AWS CLI') {
             steps {
