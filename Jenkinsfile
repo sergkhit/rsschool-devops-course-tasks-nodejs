@@ -26,7 +26,7 @@ pipeline {
         }
     }
     parameters {
-        booleanParam(name: 'SHOULD_PUSH_TO_ECR', defaultValue: false, description: 'chnange on true for push Docker image to ECR')
+        booleanParam(name: 'SHOULD_PUSH_TO_ECR', defaultValue: false, description: 'change on true for push Docker image to ECR')
     }
 
     triggers {
@@ -122,7 +122,7 @@ pipeline {
                     // sh "docker run --rm rs-task6-builder go test -v ./..." 
                     sh "pwd"
                     sh "ls -lha"
-                    sh "cd nodejs"
+                    sh "ls -lha /home/jenkins/agent/workspace/nodejs/app"
                     sh "docker build -t rs-task6-builder -f nodejs/Dockerfile --target builder nodejs"
                     sh "docker run --rm rs-task6-builder npm test"
                 }
