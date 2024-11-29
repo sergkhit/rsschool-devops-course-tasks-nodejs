@@ -270,7 +270,7 @@ pipeline {
               cd app
               pwd
               docker version
-              docker build -t rs-nodejs:latest -f Dockerfile .
+              docker build -t nodejs-app:latest -f Dockerfile .
               docker images  # Verify it was built
             '''
           }
@@ -339,7 +339,7 @@ pipeline {
             steps {
                 script {
                     // Deployment to Kubernetes
-                    sh 'helm upgrade --install my-nodejs-app ./helm-chart'
+                    sh 'helm upgrade --install nodejs-app ./helm-chart'
                 }
             }
         }
