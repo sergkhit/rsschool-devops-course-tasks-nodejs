@@ -79,8 +79,8 @@ pipeline {
                    script {
                        echo "Cloning repository..."
                        sh '''
-                       git clone https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git app
-                       cd app
+                       git clone https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git nodejs
+                       cd nodejs
                        echo "cloning files:"
                        ls -la
                        '''
@@ -122,6 +122,7 @@ pipeline {
                     // sh "docker run --rm rs-task6-builder go test -v ./..." 
                     sh "pwd"
                     sh "ls -lha"
+                    sh "cd nodejs"
                     sh "docker build -t rs-task6-builder -f nodejs/Dockerfile --target builder nodejs"
                     sh "docker run --rm rs-task6-builder npm test"
                 }
