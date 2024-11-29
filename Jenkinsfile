@@ -269,7 +269,9 @@ pipeline {
             sh '''
               cd app
               pwd
-              docker build -t goals-app:latest -f Dockerfile .
+              docker version
+              docker build -t rs-nodejs:latest -f Dockerfile .
+              docker images  # Verify it was built
             '''
           }
         }
