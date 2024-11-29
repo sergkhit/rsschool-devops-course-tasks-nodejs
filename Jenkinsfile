@@ -16,11 +16,11 @@ pipeline {
             tty: true
             resources:
               requests:
-                memory: "256Mi"
-                ephemeral-storage: "512Mi"
+                memory: "1024Mi"
+                ephemeral-storage: "2048Mi"
                 #  cpu: "500m"
               limits:
-                memory: "512Mi"
+                memory: "2048Mi"
                 #  cpu: "1"
       ephemeral-storage: "1Gi"
           - name: docker
@@ -30,12 +30,12 @@ pipeline {
             tty: true
             resources:
               requests:
-                memory: "256Mi"
-                ephemeral-storage: "512Mi"
-                # cpu: "500m"
+                memory: "1024Mi"
+                ephemeral-storage: "2048Mi"
+                #  cpu: "500m"
               limits:
-                memory: "512Mi"
-                #  cpu: "1"          
+                memory: "2048Mi"
+                #  cpu: "1"         
             volumeMounts:
             - name: docker-socket
               mountPath: /var/run/docker.sock
@@ -46,11 +46,11 @@ pipeline {
             tty: true
             resources:
               requests:
-                memory: "256Mi"
-                ephemeral-storage: "512Mi"
+                memory: "1024Mi"
+                ephemeral-storage: "2048Mi"
                 #  cpu: "500m"
               limits:
-                memory: "512Mi"
+                memory: "2048Mi"
                 #  cpu: "1"
           volumes:
           - name: docker-socket
