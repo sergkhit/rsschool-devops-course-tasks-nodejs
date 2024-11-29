@@ -542,7 +542,7 @@ spec:
         DOCKERFILE_REPO = 'https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs'
         DOCKERFILE_BRANCH = 'main'
         GIT_REPO = 'https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git' 
-        GITHUB_REPO = 'https://github.com/Proffesor94/rsschool-devops-course-tasks'
+        GITHUB_REPO = 'https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs'
         GITHUB_BRANCH = 'main'
         SONAR_HOST_URL = 'https://sonarcloud.io'
         SONAR_PROJECT_KEY = 'rstask6'
@@ -581,8 +581,8 @@ spec:
             steps {
                 git url: "${GITHUB_REPO}", branch: "${GITHUB_BRANCH}" // Checkout here as well
                 container('docker') {
-                    sh "docker build -t word-cloud-generator-builder -f Dockerfile --target builder ."  
-                    sh "docker run --rm word-cloud-generator-builder go test -v ./..." 
+                    sh "docker build -t nodejs-builder -f Dockerfile --target builder ."  
+                    sh "docker run --rm nodejs-builder go test -v ./..." 
                 }
             }
         }
