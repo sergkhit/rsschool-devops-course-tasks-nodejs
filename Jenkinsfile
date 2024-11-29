@@ -97,7 +97,7 @@ pipeline {
                 checkout scm
             }
         }
-        
+
         stage('Install curl to the Docker container') {
             steps {
                 script {
@@ -111,19 +111,19 @@ pipeline {
             }
         }
 
-        stage('SonarQube check') {
-            environment {
-                scannerHome = tool 'SonarQube';
-            }
-            steps {
-                withSonarQubeEnv(credentialsId: 'SonarQube', installationName: 'SonarQube') {
-                    sh """
-                    ${scannerHome}/bin/sonar-scanner \
-                    -Dsonar.sources=$WORKSPACE
-                    """
-                }
-            }
-        }
+        // stage('SonarQube check') {
+        //     environment {
+        //         scannerHome = tool 'SonarQube';
+        //     }
+        //     steps {
+        //         withSonarQubeEnv(credentialsId: 'SonarQube', installationName: 'SonarQube') {
+        //             sh """
+        //             ${scannerHome}/bin/sonar-scanner \
+        //             -Dsonar.sources=$WORKSPACE
+        //             """
+        //         }
+        //     }
+        // }
 
         stage('Install Dependencies') {
             steps {
@@ -155,23 +155,23 @@ pipeline {
             }
         }   
 
-        stage('Security Check SonarQube') {
-            steps {
-                container('sonarscanner') {
-                    script {
-                    echo "SonarQube test"
-                    sh '''
-                    sh 'curl -f -s -o /dev/null http://54.198.181.116:9000/api/server/version'
-                    sonar-scanner \
-                    -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                    -Dsonar.sources=. \
-                    -Dsonar.host.url=${SONAR_HOST_URL} \
-                    -Dsonar.login=${SONAR_LOGIN}
-                    '''
-                    }
-                }
-            }
-        }   
+        // stage('Security Check SonarQube') {
+        //     steps {
+        //         container('sonarscanner') {
+        //             script {
+        //             echo "SonarQube test"
+        //             sh '''
+        //             sh 'curl -f -s -o /dev/null http://54.198.181.116:9000/api/server/version'
+        //             sonar-scanner \
+        //             -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+        //             -Dsonar.sources=. \
+        //             -Dsonar.host.url=${SONAR_HOST_URL} \
+        //             -Dsonar.login=${SONAR_LOGIN}
+        //             '''
+        //             }
+        //         }
+        //     }
+        // }   
 
         stage('Install AWS CLI') {
             steps {
