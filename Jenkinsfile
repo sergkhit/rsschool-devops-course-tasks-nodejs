@@ -338,18 +338,19 @@ spec:
         PATH = "${JAVA_HOME}/bin:${PATH}"
     }
     
-        parameters {
-        booleanParam(name: 'SHOULD_PUSH_TO_ECR', defaultValue: false, description: 'chnange on true for push Docker image to ECR')
+    parameters {
+        booleanParam(name: 'SHOULD_PUSH_TO_ECR', defaultValue: false, description: 'change on true for push Docker image to ECR')
   }
-  triggers {
-    GenericTrigger(
-      causeString: 'Triggered by GitHub Push',
-      token: 'my-git-token', 
-      printPostContent: true,   
-      printContributedVariables: true, 
-      silentResponse: false
-    )
-  }
+
+    triggers {
+        GenericTrigger(
+            causeString: 'Triggered by GitHub Push',
+            token: 'my-git-token', 
+            printPostContent: true,   
+            printContributedVariables: true, 
+            silentResponse: false
+        )
+    }
 
     stages {
 
