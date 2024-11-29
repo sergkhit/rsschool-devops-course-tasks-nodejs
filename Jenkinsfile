@@ -122,7 +122,7 @@ pipeline {
                     // sh "docker run --rm rs-task6-builder go test -v ./..." 
                     sh "pwd"
                     sh "ls -lha"
-                    sh "ls -lha /home/jenkins/agent/workspace/nodejs/app"
+                    sh "ls -lha /home/jenkins/agent/workspace/rs-task6/app"
                     // sh "docker build -t rs-task6-builder -f nodejs/Dockerfile --target builder nodejs"
                     sh "docker build -t rs-task6-builder -f Dockerfile --target builder app."
                     sh "docker run --rm rs-task6-builder npm test"
