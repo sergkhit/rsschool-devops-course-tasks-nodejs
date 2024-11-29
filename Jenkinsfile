@@ -100,13 +100,18 @@ pipeline {
 
         stage('Install curl to the Docker container') {
             steps {
-                script {
-                    sh 'apk add --no-cache curl'
-                    sh 'curl --version'
-                    // Install OpenJDK (for example, version 17)
-                    sh 'apk add --no-cache openjdk17'
-                    // Verify Java installation
-                    sh 'java -version'
+                container('node') {  // Убедитесь, что команды выполняются в контейнере 'node'
+                    script {
+                        echo "Installing curl and OpenJDK..."
+                        sh '''
+                        apk add --no-cache curl
+                        apk add --no-cache openjdk17
+                        echo "Curl version:"
+                        curl --version
+                        echo "Java version:"
+                        java -version
+                        '''
+                    }
                 }
             }
         }
@@ -259,7 +264,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Deploy to K8s') {
             steps {
                 script {
