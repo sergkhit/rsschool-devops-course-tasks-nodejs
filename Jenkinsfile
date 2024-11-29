@@ -18,10 +18,10 @@ pipeline {
               requests:
                 memory: "256Mi"
                 ephemeral-storage: "512Mi"
-                // cpu: "500m"
+                #  cpu: "500m"
               limits:
                 memory: "512Mi"
-                // cpu: "1"
+                #  cpu: "1"
       ephemeral-storage: "1Gi"
           - name: docker
             image: docker:24.0.5
@@ -32,10 +32,10 @@ pipeline {
               requests:
                 memory: "256Mi"
                 ephemeral-storage: "512Mi"
-                // cpu: "500m"
+                # cpu: "500m"
               limits:
                 memory: "512Mi"
-                // cpu: "1"          
+                #  cpu: "1"          
             volumeMounts:
             - name: docker-socket
               mountPath: /var/run/docker.sock
@@ -48,10 +48,10 @@ pipeline {
               requests:
                 memory: "256Mi"
                 ephemeral-storage: "512Mi"
-                // cpu: "500m"
+                #  cpu: "500m"
               limits:
                 memory: "512Mi"
-                // cpu: "1"
+                #  cpu: "1"
           volumes:
           - name: docker-socket
             hostPath:
