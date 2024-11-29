@@ -300,7 +300,7 @@ pipeline {
 //             echo 'Pipeline failed!'
 //         }
 //     }
-// }
+}
 
 
 
