@@ -54,11 +54,17 @@ pipeline {
         CONTAINER_NAME = "nodejs-app"
         IMAGE_TAG = "latest"
         NAMESPACE = "default"
+        GITHUB_REPO = "https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git"
+        GITHUB_BRANCH = "main"
+        K3S_NAMESPACE = "jenkins"
         HELM_CHART_DIR = "helm-chart"
         AWS_REGION = "us-east-1"
-        SONAR_PROJECT_KEY = "rs-task6-nodejs"
+        SONAR_PROJECT_KEY = "rstask6"
         SONAR_LOGIN = "sqp_nnn"
-        SONAR_HOST_URL = "http://54.198.181.116:9000"
+        SONAR_HOST_URL = "http://3.80.253.45:9000"
+        WORKSPACE = "./"
+        JAVA_HOME = '/opt/java/openjdk'  // Make sure this points to your Java installation
+        PATH = "${JAVA_HOME}/bin:${PATH}"
     }
 
     stages {
@@ -82,6 +88,39 @@ pipeline {
                        ls -la
                        '''
                     }
+                }
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Install curl to the Docker container') {
+            steps {
+                script {
+                    sh 'apk add --no-cache curl'
+                    sh 'curl --version'
+                    // Install OpenJDK (for example, version 17)
+                    sh 'apk add --no-cache openjdk17'
+                    // Verify Java installation
+                    sh 'java -version'
+                }
+            }
+        }
+
+        stage('SonarQube check') {
+            environment {
+                scannerHome = tool 'SonarQube';
+            }
+            steps {
+                withSonarQubeEnv(credentialsId: 'SonarQube', installationName: 'SonarQube') {
+                    sh """
+                    ${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.sources=$WORKSPACE
+                    """
                 }
             }
         }
@@ -122,6 +161,7 @@ pipeline {
                     script {
                     echo "SonarQube test"
                     sh '''
+                    sh 'curl -f -s -o /dev/null http://54.198.181.116:9000/api/server/version'
                     sonar-scanner \
                     -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                     -Dsonar.sources=. \
