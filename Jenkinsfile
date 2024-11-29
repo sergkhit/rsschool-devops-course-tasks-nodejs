@@ -73,21 +73,21 @@ pipeline {
 
     stages {
 
-        stage('Prepare') {
-            steps {
-                container('node') {
-                   script {
-                       echo "Cloning repository..."
-                       sh '''
-                       git clone https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git nodejs
-                       cd nodejs
-                       echo "cloning files:"
-                       ls -la
-                       '''
-                    }
-                }
-            }
-        }
+        // stage('Prepare') {
+        //     steps {
+        //         container('node') {
+        //            script {
+        //                echo "Cloning repository..."
+        //                sh '''
+        //                git clone https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git nodejs
+        //                cd nodejs
+        //                echo "cloning files:"
+        //                ls -la
+        //                '''
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Checkout Dockerfile') {
             steps {
