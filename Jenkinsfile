@@ -122,7 +122,7 @@ pipeline {
             steps {
                 container('docker') {
                     script {
-                    // Install OpenJDK 17 if necessary (already in the docker container)
+                    // Install OpenJDK 17 
                     sh """
                        apk add --no-cache -q openjdk17
                        export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
