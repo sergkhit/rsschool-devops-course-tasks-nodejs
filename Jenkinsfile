@@ -171,6 +171,8 @@ pipeline {
 
 
         stage('Push Docker Image to ECR') {
+            echo "Current Build Result: ${currentBuild.result}"
+            echo "PUSH_TO_ECR Value: ${params.PUSH_TO_ECR}"
             when { expression { params.PUSH_TO_ECR == true } }
             steps {
                 script {
