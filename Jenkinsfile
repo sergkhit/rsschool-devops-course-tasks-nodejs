@@ -181,6 +181,7 @@ pipeline {
 
                         // Остановка и удаление контейнера
                         sh "docker stop ${containerId}"
+                    }
                 }
             }
         }
