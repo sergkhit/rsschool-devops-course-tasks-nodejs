@@ -163,7 +163,8 @@ pipeline {
         stage('Application Build') {
             steps {
                 container('docker') {
-                    sh "docker build -t ${ECR_REPOSITORY}:${IMAGE_TAG} ."
+                    // sh "docker build -t ${ECR_REPOSITORY}:${IMAGE_TAG} ."
+                    sh "docker build -t nodejs-app:latest -f Dockerfile ."
                 }
             }
         }
