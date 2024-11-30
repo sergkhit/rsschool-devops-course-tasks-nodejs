@@ -147,25 +147,54 @@ pipeline {
         // }
 
 
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         container('docker') {
+        //             script {
+        //                 // Ensure Java is installed and configured
+        //                 sh """
+        //                   apk add --no-cache -q openjdk17
+        //                   export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+        //                   export PATH=$JAVA_HOME/bin:$PATH
+        //                   ls -l \$JAVA_HOME/bin
+        //                   java -version
+        //                 """
+                        
+        //                 // Ensure SonarQube Scanner is configured
+        //                 def scannerHome = tool 'SonarQubeScanner'
+
+        //                 // Run SonarQube analysis
+        //                 withSonarQubeEnv('SonarQube') {
+        //                     sh """
+        //                       ${scannerHome}/bin/sonar-scanner \
+        //                         -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+        //                         -Dsonar.sources=. \
+        //                         -Dsonar.host.url=${SONAR_HOST_URL} \
+        //                         -Dsonar.organization=${SONAR_ORGANIZATION} \
+        //                         -Dsonar.login=${SONAR_TOKEN}
+        //                     """
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+
+
         stage('SonarQube Analysis') {
             steps {
                 container('docker') {
                     script {
-                        // Ensure Java is installed and configured
-                        sh """
-                          apk add --no-cache -q openjdk17
-                          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-                          export PATH=$JAVA_HOME/bin:$PATH
-                          ls -l \$JAVA_HOME/bin
-                          java -version
-                        """
-                        
                         // Ensure SonarQube Scanner is configured
                         def scannerHome = tool 'SonarQubeScanner'
 
                         // Run SonarQube analysis
                         withSonarQubeEnv('SonarQube') {
                             sh """
+                              apk add --no-cache -q openjdk17
+                              export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+                              export PATH=$JAVA_HOME/bin:$PATH
+                              ls -l \$JAVA_HOME/bin
+                              java -version
                               ${scannerHome}/bin/sonar-scanner \
                                 -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                                 -Dsonar.sources=. \
@@ -178,6 +207,7 @@ pipeline {
                 }
             }
         }
+
 
         stage('Application Build and test run') {
             steps {
