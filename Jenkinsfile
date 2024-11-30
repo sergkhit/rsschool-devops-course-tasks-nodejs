@@ -24,7 +24,7 @@ pipeline {
                   privileged: true
                 resources:
                     requests:
-                        ephemeral-storage: "200Mi"
+                        ephemeral-storage: "1Gi"
                     limits:
                         ephemeral-storage: "2Gi"                   
               - name: helm
