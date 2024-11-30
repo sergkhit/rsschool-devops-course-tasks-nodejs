@@ -169,21 +169,13 @@ pipeline {
         }
 
 
-
-        stage('Push Docker Image to ECR') {
-            steps {
-                script {
-                    // Выводим текущее значение параметра
-                    echo "PUSH_TO_ECR Value: ${params.SHOULD_PUSH_TO_ECR}"
-
-                    if (params.SHOULD_PUSH_TO_ECR == true) {
-                        // Проверка текущего состояния сборки
-                        if (currentBuild.result != 'FAILURE') {
-                            env.PUSH_SUCCESSFUL = true // Захватываем успешность
-                        } else {
-                            env.PUSH_SUCCESSFUL = false // Устанавливаем в false на неудаче
-                        }
-
+		stage('Push Image to ECR'){
+		    steps {
+		        script {
+		            MANUAL_STEP_APPROVED = input(
+                        message: 'Do you want to proceed with pushing to AWS ECR',
+                        parameters: [booleanParam(defaultValue: false, description: '', name: 'Push to AWS ECR')]
+                    )
                         container('docker') {
                             withCredentials([aws(credentialsId: "${AWS_CREDENTIALS_ID}")]) {
                                 // Логин в ECR
@@ -193,13 +185,45 @@ pipeline {
                             }
                             // Push Docker image to ECR
                             sh "docker push ${ECR_REPOSITORY}:${IMAGE_TAG}"
-                        }
-                    } else {
-                        echo "Пуш в ECR пропущен, так как SHOULD_PUSH_TO_ECR установлено в false."
-                    }
+                            echo $MANUAL_STEP_APPROVED
                 }
             }
-        }         
+        }
+    }
+
+
+
+        // stage('Push Docker Image to ECR') {
+        //     steps {
+        //         script {
+        //             // Выводим текущее значение параметра
+        //             echo "PUSH_TO_ECR Value: ${params.SHOULD_PUSH_TO_ECR}"
+
+        //             if (params.SHOULD_PUSH_TO_ECR == true) {
+        //                 // Проверка текущего состояния сборки
+        //                 if (currentBuild.result != 'FAILURE') {
+        //                     env.PUSH_SUCCESSFUL = true // Захватываем успешность
+        //                 } else {
+        //                     env.PUSH_SUCCESSFUL = false // Устанавливаем в false на неудаче
+        //                 }
+
+        //                 container('docker') {
+        //                     withCredentials([aws(credentialsId: "${AWS_CREDENTIALS_ID}")]) {
+        //                         // Логин в ECR
+        //                         sh """
+        //                         aws ecr get-login-password --region ${AWS_REGION} | docker login -u AWS --password-stdin ${ECR_REPOSITORY}
+        //                         """
+        //                     }
+        //                     // Push Docker image to ECR
+        //                     sh "docker push ${ECR_REPOSITORY}:${IMAGE_TAG}"
+                            
+        //                 }
+        //             } else {
+        //                 echo "Пуш в ECR пропущен, так как SHOULD_PUSH_TO_ECR установлено в false."
+        //             }
+        //         }
+        //     }
+        // }         
 
         stage('Create ECR Secret') {
             steps {
