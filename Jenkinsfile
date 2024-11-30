@@ -238,9 +238,16 @@ pipeline {
             }
         }
 
+
+
+
         stage('Deploy to Kubernetes with Helm') {
-            when { expression { params.PUSH_TO_ECR == true } }
             steps {
+                script {
+		            MANUAL_STEP_APPROVED = input(
+                        message: 'Do you want to proceed with pushing to AWS ECR',
+                        parameters: [booleanParam(defaultValue: false, description: '', name: 'Push to AWS ECR')]
+                    )
                 container('helm') {
                     sh """
                     helm upgrade --install nodejs-app ./helm-chart \\
@@ -249,9 +256,28 @@ pipeline {
                         -f ./helm-chart/values.yaml \\
                         --namespace jenkins
                     """
+                    sh 'sleep 20 && curl http://localhost:3000'
+                    }
                 }
             }
         }
+
+
+        // stage('Deploy to Kubernetes with Helm') {
+        //     when { expression { params.PUSH_TO_ECR == true } }
+        //     steps {
+        //         container('helm') {
+        //             sh """
+        //             helm upgrade --install nodejs-app ./helm-chart \\
+        //                 --set image.repository=${ECR_REPOSITORY} \\
+        //                 --set image.tag=${IMAGE_TAG} \\
+        //                 -f ./helm-chart/values.yaml \\
+        //                 --namespace jenkins
+        //             """
+        //         }
+        //     }
+        // }
+        
         // post {
         // always {
         //     cleanWs()
