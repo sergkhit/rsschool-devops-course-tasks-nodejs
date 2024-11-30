@@ -30,17 +30,6 @@ pipeline {
         booleanParam(name: 'SHOULD_PUSH_TO_ECR', defaultValue: true, description: 'change on true for push Docker image to ECR')
     }
 
-    // triggers {
-    //     GenericTrigger(
-    //         causeString: 'Triggered by GitHub Push',
-    //         token: 'my-git-token',
-    //         printPostContent: true,
-    //         printContributedVariables: true,
-    //         silentResponse: false
-    //     )
-    // }
-
-
     environment {
         ECR_REGISTRY = "905418277051.dkr.ecr.us-east-1.amazonaws.com"
         ECR_REPO = "nodejs-app-repo"
@@ -115,71 +104,6 @@ pipeline {
             }
         }
 
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         container('docker') {
-        //             script {
-        //             // Install OpenJDK 17 
-        //             sh """
-        //                apk add --no-cache -q openjdk17
-        //                export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-        //                export PATH=$JAVA_HOME/bin:$PATH
-        //                java -version
-        //             """
-
-        //             // Use SonarQubeScanner tool configured in Jenkins
-        //             def scannerHome = tool 'SonarQubeScanner'
-
-        //                 // Run SonarQube analysis with appropriate parameters
-        //                 withSonarQubeEnv('SonarQube') {
-        //                   sh """
-        //                     ${scannerHome}/bin/sonar-scanner \
-        //                       -Dsonar.projectKey=rs-task6-nodejs \
-        //                       -Dsonar.sources=. \
-        //                       -Dsonar.host.url=https://sonarcloud.io \
-        //                       -Dsonar.login=${SONAR_TOKEN} \
-        //                       -Dsonar.organization=${SONAR_ORGANIZATION}
-        //                   """
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
-
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         container('docker') {
-        //             script {
-        //                 // Ensure Java is installed and configured
-        //                 sh """
-        //                   apk add --no-cache -q openjdk17
-        //                   export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-        //                   export PATH=$JAVA_HOME/bin:$PATH
-        //                   ls -l \$JAVA_HOME/bin
-        //                   java -version
-        //                 """
-                        
-        //                 // Ensure SonarQube Scanner is configured
-        //                 def scannerHome = tool 'SonarQubeScanner'
-
-        //                 // Run SonarQube analysis
-        //                 withSonarQubeEnv('SonarQube') {
-        //                     sh """
-        //                       ${scannerHome}/bin/sonar-scanner \
-        //                         -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-        //                         -Dsonar.sources=. \
-        //                         -Dsonar.host.url=${SONAR_HOST_URL} \
-        //                         -Dsonar.organization=${SONAR_ORGANIZATION} \
-        //                         -Dsonar.login=${SONAR_TOKEN}
-        //                     """
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
-
         stage('SonarQube Analysis') {
             steps {
                 container('docker') {
@@ -214,15 +138,15 @@ pipeline {
                 container('docker') {
                     sh "docker build -t ${ECR_REPOSITORY}:${IMAGE_TAG} ."
                     sh 'docker images'
-                    sh 'apk add --no-cache curl'
-                    // Запуск контейнера в фоновом режиме (с флагом -d)
-                    script {
-                        def containerId = sh(script: "docker run -d -p 3000:3000 ${ECR_REPOSITORY}:${IMAGE_TAG}", returnStdout: true).trim()
-                        echo "Запущен контейнер с ID: ${containerId}"
-                        sh 'sleep 10'  // Подождите пару секунд, чтобы приложение успело запуститься
-                        sh 'curl http://localhost:3000'    // Запрос к приложению
-                        sh "docker stop ${containerId}"    // Остановка и удаление контейнера
-                    }
+                    // sh 'apk add --no-cache curl'
+                    // // Запуск контейнера в фоновом режиме (с флагом -d)
+                    // script {
+                    //     def containerId = sh(script: "docker run -d -p 3000:3000 ${ECR_REPOSITORY}:${IMAGE_TAG}", returnStdout: true).trim()
+                    //     echo "Запущен контейнер с ID: ${containerId}"
+                    //     sh 'sleep 10'  // Подождите пару секунд, чтобы приложение успело запуститься
+                    //     sh 'curl http://localhost:3000'    // Запрос к приложению
+                    //     sh "docker stop ${containerId}"    // Остановка и удаление контейнера
+                    // }
                 }
             }
         }
@@ -289,230 +213,6 @@ pipeline {
             }
         }
        
-
-        // stage('Checkout') {
-        //     steps {
-        //         checkout scm
-        //     }
-        // }
-
-        // stage('Install curl to the Docker container') {
-        //     steps {
-        //         container('node') {  // Убедитесь, что команды выполняются в контейнере 'node'
-        //             script {
-        //                 echo "Installing curl and OpenJDK..."
-        //                 sh '''
-        //                 apk add --no-cache curl
-        //                 apk add --no-cache openjdk17
-        //                 echo "Curl version:"
-        //                 curl --version
-        //                 echo "Java version:"
-        //                 java -version
-        //                 '''
-        //             }
-        //         }
-        //     }
-        // }
-
-        // stage('SonarQube check') {
-        //     environment {
-        //         scannerHome = tool 'SonarQube';
-        //     }
-        //     steps {
-        //         withSonarQubeEnv(credentialsId: 'SonarQube', installationName: 'SonarQube') {
-        //             sh """
-        //             ${scannerHome}/bin/sonar-scanner \
-        //             -Dsonar.sources=$WORKSPACE
-        //             """
-        //         }
-        //     }
-        // }
-
-        // stage('Install Dependencies') {
-        //     steps {
-        //         container('node') {
-        //             script {
-        //                echo "Installing dependencies..."
-        //                sh '''
-        //                cd nodejs/app
-        //                pwd
-        //                npm install
-        //                '''
-        //             }
-        //         }
-        //     }
-        // }   
-        // stage('Run Tests') {
-        //     steps {
-        //         container('node') {
-        //             script {
-        //                echo "Running tests..."
-        //                sh '''
-        //               cd nodejs/app
-        //               pwd
-        //               npm test -- --clearCache
-        //               npm test
-        //               '''
-        //             }
-        //         }
-        //     }
-        // }   
-
-        // stage('Security Check SonarQube') {
-        //     steps {
-        //         container('sonarscanner') {
-        //             script {
-        //             echo "SonarQube test"
-        //             sh '''
-        //             sh 'curl -f -s -o /dev/null http://54.198.181.116:9000/api/server/version'
-        //             sonar-scanner \
-        //             -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-        //             -Dsonar.sources=. \
-        //             -Dsonar.host.url=${SONAR_HOST_URL} \
-        //             -Dsonar.login=${SONAR_LOGIN}
-        //             '''
-        //             }
-        //         }
-        //     }
-        // }   
-
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         container('docker') {
-        //             script {
-        //             // Install OpenJDK 17 if necessary (already in the docker container)
-        //             sh """
-        //               apk add --no-cache -q openjdk17
-        //               export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-        //               export PATH=\$JAVA_HOME/bin:\$PATH
-        //               java -version
-        //             """
-
-        //             // Use SonarQubeScanner tool configured in Jenkins
-        //             def scannerHome = tool 'SonarQubeScanner'
-
-        //                 // Run SonarQube analysis with appropriate parameters
-        //                 withSonarQubeEnv('SonarQube') {
-        //                   sh """
-        //                     ${scannerHome}/bin/sonar-scanner \
-        //                       -Dsonar.projectKey=rstask6 \
-        //                       -Dsonar.sources=. \
-        //                       -Dsonar.host.url=https://sonarcloud.io \
-        //                       -Dsonar.login=${SONAR_TOKEN} \
-        //                       -Dsonar.organization=${SONAR_ORGANIZATION}
-        //                   """
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
-    //     stage('Install AWS CLI') {
-    //         steps {
-    //             container('docker') {
-    //                 script {
-    //                     echo "Installing AWS CLI..."
-    //                     sh '''
-    //                     apk add --no-cache python3 py3-pip
-    //                     pip3 install awscli
-    //                     aws --version
-    //                     '''
-    //                 }
-    //             }
-    //         }
-    //     }   
-
-    // stage('Build Docker Image') {
-    //   steps {
-    //     container('docker') {
-    //       script {
-    //         echo "Building Docker image..."
-    //         sh '''
-    //           cd app
-    //           pwd
-    //           docker version
-    //           docker build -t nodejs-app:latest -f Dockerfile .
-    //           docker images  # Verify it was built
-    //         '''
-    //       }
-    //     }
-    //   }
-    // }
-    
  
-    //     // stage('Build') {
-    //     //     steps {
-    //     //         script {
-    //     //             // docker build
-    //     //             echo "Build Docker image"
-
-    //     //             sh """
-    //     //             docker version
-    //     //             sh 'docker build -t nodejs-app .
-    //     //             docker images  # Verify it was built
-    //     //             """
-    //     //         }
-    //     //     }
-    //     // }
-
-    //     // stage('Run Image Locally') {
-    //     //     steps {
-    //     //         script {
-    //     //             echo "Running Docker image locally to test..."
-    //     //             sh """
-    //     //             docker run -d --name ${CONTAINER_NAME} ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
-    //     //             sleep 5  
-    //     //             # curl http://localhost:8080  # Test the service locally (replace with your actual test)
-    //     //             docker ps  # Verify it's running
-    //     //             """
-    //     //         }
-    //     //     }
-    //     // }        
-    //     // stage('Test') {
-    //     //     steps {
-    //     //         script {
-    //     //             // get tests
-    //     //             sh 'npm test' 
-    //     //         }
-    //     //     }
-    //     // }
-    //     // stage('Security Check') {
-    //     //     steps {
-    //     //         script {
-    //     //             // Security Check SonarQube
-    //     //             sh 'sonar-scanner'
-    //     //         }
-    //     //     }
-    //     // }
-    //     stage('Build and Push Docker Image') {
-    //         steps {
-    //             script {
-    //                 // Login to ECR
-    //                 sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 905418277051.dkr.ecr.us-east-1.amazonaws.com'
-    //                 // Push image to ECR
-    //                 sh 'docker tag nodejs-app:latest 905418277051.dkr.ecr.us-east-1.amazonaws.com/nodejs-app-repo:latest'
-    //                 sh 'docker push 905418277051.dkr.ecr.us-east-1.amazonaws.com/nodejs-app-repo:latest'
-    //             }
-    //         }
-    //     }
-
-    //     stage('Deploy to K8s') {
-    //         steps {
-    //             script {
-    //                 // Deployment to Kubernetes
-    //                 sh 'helm upgrade --install nodejs-app ./helm-chart'
-    //             }
-    //         }
-    //     }
-    // }
-    // post {
-    //     success {
-    //         // Success Notifications
-    //         echo 'Pipeline succeeded!'
-    //     }
-    //     failure {
-    //         // Failure Notifications
-    //         echo 'Pipeline failed!'
-    //     }
     }
 }
