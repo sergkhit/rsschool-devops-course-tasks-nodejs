@@ -187,6 +187,48 @@ pipeline {
             }
         }
 
+
+
+
+        stage('Push Docker Image to ECR') {
+            when { expression { params.PUSH_TO_ECR == true } }
+            steps {
+                script {
+                    if (currentBuild.result != 'FAILURE') {  //Capture success (or unstable)
+                        env.PUSH_SUCCESSFUL = true
+                    } else {
+                        env.PUSH_SUCCESSFUL = false // Explicitly set to false on failure
+                        }
+                    container('docker') {
+                        withCredentials([aws(credentialsId: "${AWS_CREDENTIALS_ID}")]) {
+                            // Log in to ECR
+                            sh """
+                            aws ecr get-login-password --region ${AWS_REGION} | docker login -u AWS --password-stdin ${ECR_REPOSITORY}
+                            """
+                        }
+                        // Push Docker image to ECR
+                        sh "docker push ${ECR_REPOSITORY}:${IMAGE_TAG}"
+                    }
+                }
+            }
+        }
+        
+        stage('Create ECR Secret') {
+            steps {
+                container('docker') {
+                    withCredentials([aws(credentialsId: "${AWS_CREDENTIALS_ID}")]) {
+                        sh """
+                        aws ecr get-login-password --region \${AWS_REGION} | docker login --username AWS --password-stdin \${ECR_REPOSITORY}
+
+                        kubectl create secret generic ecr-secret --namespace=jenkins --from-file=.dockerconfigjson=\$HOME/.docker/config.json --dry-run=client -o json | kubectl apply -f -
+                        """
+                    }
+                }
+            }
+        }
+
+
+
         // stage('Checkout') {
         //     steps {
         //         checkout scm
