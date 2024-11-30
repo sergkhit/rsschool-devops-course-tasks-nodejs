@@ -185,7 +185,6 @@ pipeline {
                             }
                             // Push Docker image to ECR
                             sh "docker push ${ECR_REPOSITORY}:${IMAGE_TAG}"
-                            echo $MANUAL_STEP_APPROVED
                 }
             }
         }
@@ -253,7 +252,13 @@ pipeline {
                 }
             }
         }
-       
+        post {
+        always {
+            cleanWs()
+            mail to: 's.khitrovo@gmail.com',
+            subject: "Jenkins Build: ${currentBuild.result}",
+            body: "Job: ${env.JOB_NAME} \n Build Number: ${env.BUILD_NUMBER}"
+        }
  
     }
 }
