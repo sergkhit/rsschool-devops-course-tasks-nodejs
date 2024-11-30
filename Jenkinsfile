@@ -67,8 +67,8 @@ pipeline {
         DOCKERFILE_BRANCH = 'main'
         GIT_REPO = 'https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git' 
         SONAR_HOST_URL = 'https://sonarcloud.io'
-        SONAR_PROJECT_KEY = 'sonar-token'
-        SONAR_ORGANIZATION = 'sergkhit'
+        SONAR_PROJECT_KEY = 'rs-task6-key'
+        SONAR_ORGANIZATION = 'rs-task6'
         SONAR_TOKEN = credentials('sonar-token')
         SONAR_SCANNER_VERSION = '6.2.1.4610'
         SONAR_SCANNER_HOME = "$HOME/.sonar/sonar-scanner-${SONAR_SCANNER_VERSION}-linux-x64"
@@ -136,7 +136,6 @@ pipeline {
                         // Run SonarQube analysis with appropriate parameters
                         withSonarQubeEnv('SonarQube') {
                           sh """
-                            which java  // Проверка пути к Java
                             ${scannerHome}/bin/sonar-scanner \
                               -Dsonar.projectKey=sonar-token \
                               -Dsonar.sources=. \
@@ -175,6 +174,8 @@ pipeline {
             when { expression { params.PUSH_TO_ECR == true } }
             steps {
                 script {
+                    echo "Current Build Result: ${currentBuild.result}"
+                    echo "PUSH_TO_ECR Value: ${params.PUSH_TO_ECR}"
                     if (currentBuild.result != 'FAILURE') {  //Capture success (or unstable)
                         env.PUSH_SUCCESSFUL = true
                     } else {
