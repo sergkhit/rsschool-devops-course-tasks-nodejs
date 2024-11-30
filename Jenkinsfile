@@ -115,36 +115,36 @@ pipeline {
             }
         }
 
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         container('docker') {
-        //             script {
-        //             // Install OpenJDK 17 
-        //             sh """
-        //                apk add --no-cache -q openjdk17
-        //                export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-        //                export PATH=$JAVA_HOME/bin:$PATH
-        //                java -version
-        //             """
+        stage('SonarQube Analysis') {
+            steps {
+                container('docker') {
+                    script {
+                    // Install OpenJDK 17 
+                    sh """
+                       apk add --no-cache -q openjdk17
+                       export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+                       export PATH=$JAVA_HOME/bin:$PATH
+                       java -version
+                    """
 
-        //             // Use SonarQubeScanner tool configured in Jenkins
-        //             def scannerHome = tool 'SonarQubeScanner'
+                    // Use SonarQubeScanner tool configured in Jenkins
+                    def scannerHome = tool 'SonarQubeScanner'
 
-        //                 // Run SonarQube analysis with appropriate parameters
-        //                 withSonarQubeEnv('SonarQube') {
-        //                   sh """
-        //                     ${scannerHome}/bin/sonar-scanner \
-        //                       -Dsonar.projectKey=sonar-token \
-        //                       -Dsonar.sources=. \
-        //                       -Dsonar.host.url=https://sonarcloud.io \
-        //                       -Dsonar.login=${SONAR_TOKEN} \
-        //                       -Dsonar.organization=${SONAR_ORGANIZATION}
-        //                   """
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+                        // Run SonarQube analysis with appropriate parameters
+                        withSonarQubeEnv('SonarQube') {
+                          sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                              -Dsonar.projectKey=sonar-token \
+                              -Dsonar.sources=. \
+                              -Dsonar.host.url=https://sonarcloud.io \
+                              -Dsonar.login=${SONAR_TOKEN} \
+                              -Dsonar.organization=${SONAR_ORGANIZATION}
+                          """
+                        }
+                    }
+                }
+            }
+        }
 
         stage('Application Build and test run') {
             steps {
@@ -252,7 +252,7 @@ pipeline {
                 }
             }
         }
-    }    
+       
 
         // stage('Checkout') {
         //     steps {
