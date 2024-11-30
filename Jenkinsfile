@@ -64,7 +64,7 @@ pipeline {
         DOCKERFILE_BRANCH = 'main'
         GIT_REPO = 'https://github.com/sergkhit/rsschool-devops-course-tasks-nodejs.git' 
         SONAR_HOST_URL = 'https://sonarcloud.io'
-        SONAR_PROJECT_KEY = 'rs-task6-nodejs'
+        SONAR_PROJECT_KEY = 'rs-task6'
         SONAR_ORGANIZATION = 'rs-task6'
         SONAR_TOKEN = credentials('sonar-token')
         SONAR_SCANNER_VERSION = '6.2.1.4610'
