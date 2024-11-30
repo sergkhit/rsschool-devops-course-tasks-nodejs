@@ -257,7 +257,7 @@ pipeline {
                         --namespace jenkins
                     """
                     sh 'apk add --no-cache curl'
-                    sh 'sleep 20 && curl http://localhost:3000'
+                    sh 'sleep 20 && kubectl get all -n jenkins && kubectl get svc -A && curl http://localhost:30001'
                     }
                 }
             }
