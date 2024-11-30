@@ -115,36 +115,36 @@ pipeline {
             }
         }
 
-        // stage('SonarQube Analysis') {
-        //     steps {
-        //         container('docker') {
-        //             script {
-        //             // Install OpenJDK 17 
-        //             sh """
-        //                apk add --no-cache -q openjdk17
-        //                export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-        //                export PATH=$JAVA_HOME/bin:$PATH
-        //                java -version
-        //             """
+        stage('SonarQube Analysis') {
+            steps {
+                container('docker') {
+                    script {
+                    // Install OpenJDK 17 
+                    sh """
+                       apk add --no-cache -q openjdk17
+                       export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+                       export PATH=$JAVA_HOME/bin:$PATH
+                       java -version
+                    """
 
-        //             // Use SonarQubeScanner tool configured in Jenkins
-        //             def scannerHome = tool 'SonarQubeScanner'
+                    // Use SonarQubeScanner tool configured in Jenkins
+                    def scannerHome = tool 'SonarQubeScanner'
 
-        //                 // Run SonarQube analysis with appropriate parameters
-        //                 withSonarQubeEnv('SonarQube') {
-        //                   sh """
-        //                     ${scannerHome}/bin/sonar-scanner \
-        //                       -Dsonar.projectKey=sonar-token \
-        //                       -Dsonar.sources=. \
-        //                       -Dsonar.host.url=https://sonarcloud.io \
-        //                       -Dsonar.login=${SONAR_TOKEN} \
-        //                       -Dsonar.organization=${SONAR_ORGANIZATION}
-        //                   """
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+                        // Run SonarQube analysis with appropriate parameters
+                        withSonarQubeEnv('SonarQube') {
+                          sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                              -Dsonar.projectKey=sonar-token \
+                              -Dsonar.sources=. \
+                              -Dsonar.host.url=https://sonarcloud.io \
+                              -Dsonar.login=${SONAR_TOKEN} \
+                              -Dsonar.organization=${SONAR_ORGANIZATION}
+                          """
+                        }
+                    }
+                }
+            }
+        }
 
         stage('Application Build and test run') {
             steps {
@@ -164,33 +164,30 @@ pipeline {
             }
         }
 
-
-
-
-        // stage('Push Docker Image to ECR') {
-        //     when { expression { params.PUSH_TO_ECR == true } }
-        //     steps {
-        //         script {
-        //             echo "Current Build Result: ${currentBuild.result}"
-        //             echo "PUSH_TO_ECR Value: ${params.PUSH_TO_ECR}"
-        //             if (currentBuild.result != 'FAILURE') {  //Capture success (or unstable)
-        //                 env.PUSH_SUCCESSFUL = true
-        //             } else {
-        //                 env.PUSH_SUCCESSFUL = false // Explicitly set to false on failure
-        //                 }
-        //             container('docker') {
-        //                 withCredentials([aws(credentialsId: "${AWS_CREDENTIALS_ID}")]) {
-        //                     // Log in to ECR
-        //                     sh """
-        //                     aws ecr get-login-password --region ${AWS_REGION} | docker login -u AWS --password-stdin ${ECR_REPOSITORY}
-        //                     """
-        //                 }
-        //                 // Push Docker image to ECR
-        //                 sh "docker push ${ECR_REPOSITORY}:${IMAGE_TAG}"
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Push Docker Image to ECR') {
+            when { expression { params.PUSH_TO_ECR == true } }
+            steps {
+                script {
+                    echo "Current Build Result: ${currentBuild.result}"
+                    echo "PUSH_TO_ECR Value: ${params.PUSH_TO_ECR}"
+                    if (currentBuild.result != 'FAILURE') {  //Capture success (or unstable)
+                        env.PUSH_SUCCESSFUL = true
+                    } else {
+                        env.PUSH_SUCCESSFUL = false // Explicitly set to false on failure
+                        }
+                    container('docker') {
+                        withCredentials([aws(credentialsId: "${AWS_CREDENTIALS_ID}")]) {
+                            // Log in to ECR
+                            sh """
+                            aws ecr get-login-password --region ${AWS_REGION} | docker login -u AWS --password-stdin ${ECR_REPOSITORY}
+                            """
+                        }
+                        // Push Docker image to ECR
+                        sh "docker push ${ECR_REPOSITORY}:${IMAGE_TAG}"
+                    }
+                }
+            }
+        }
 
 
         stage('Push Docker Image to ECR') {
@@ -238,7 +235,21 @@ pipeline {
             }
         }
 
-
+        stage('Deploy to Kubernetes with Helm') {
+            when { expression { params.PUSH_TO_ECR == true } }
+            steps {
+                container('helm') {
+                    sh """
+                    helm upgrade --install nodejs-app ./helm-chart \\
+                        --set image.repository=${ECR_REPOSITORY} \\
+                        --set image.tag=${IMAGE_TAG} \\
+                        -f ./helm-chart/values.yaml \\
+                        --namespace jenkins
+                    """
+                }
+            }
+        }
+    }    
 
         // stage('Checkout') {
         //     steps {
