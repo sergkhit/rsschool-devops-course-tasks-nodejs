@@ -25,8 +25,12 @@ pipeline {
             retries 2
         }
     }
+    // parameters {
+    //     booleanParam(name: 'SHOULD_PUSH_TO_ECR', defaultValue: false, description: 'change on true for push Docker image to ECR')
+    // }
+
     parameters {
-        booleanParam(name: 'SHOULD_PUSH_TO_ECR', defaultValue: false, description: 'change on true for push Docker image to ECR')
+        booleanParam(name: 'SHOULD_PUSH_TO_ECR', defaultValue: true, description: 'change on true for push Docker image to ECR')
     }
 
     triggers {
