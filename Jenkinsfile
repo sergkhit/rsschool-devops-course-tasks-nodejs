@@ -1,3 +1,31 @@
+// pipeline {
+//     agent {
+//         kubernetes {
+//             label 'docker-build'
+//             yaml '''
+//             apiVersion: v1
+//             kind: Pod
+//             spec:
+//               serviceAccountName: jenkins
+//               containers:
+//               - name: node
+//                 image: timbru31/node-alpine-git
+//                 command:
+//                 - cat
+//                 tty: true
+//               - name: docker
+//                 image: docker:dind
+//                 securityContext:
+//                   privileged: true
+//               - name: helm
+//                 image: alpine/helm:3.11.1  # Helm container
+//                 command: ['cat']            
+//                 tty: true                   
+//             '''
+//             retries 2
+//         }
+//     }
+
 pipeline {
     agent {
         kubernetes {
@@ -6,21 +34,36 @@ pipeline {
             apiVersion: v1
             kind: Pod
             spec:
-              serviceAccountName: jenkins
-              containers:
-              - name: node
-                image: timbru31/node-alpine-git
-                command:
-                - cat
-                tty: true
-              - name: docker
-                image: docker:dind
-                securityContext:
-                  privileged: true
-              - name: helm
-                image: alpine/helm:3.11.1  # Helm container
-                command: ['cat']            
-                tty: true                   
+                serviceAccountName: jenkins
+                containers:
+                - name: node
+                    image: timbru31/node-alpine-git
+                    command:
+                    - cat
+                    tty: true
+                    resources:
+                        requests:
+                            ephemeral-storage: "100Mi"
+                        limits:
+                            ephemeral-storage: "500Mi"
+                - name: docker
+                    image: docker:dind
+                    securityContext:
+                        privileged: true
+                    resources:
+                        requests:
+                            ephemeral-storage: "200Mi"
+                        limits:
+                            ephemeral-storage: "1Gi"
+                - name: helm
+                    image: alpine/helm:3.11.1  # Helm container
+                    command: ['cat']            
+                    tty: true
+                    resources:
+                        requests:
+                            ephemeral-storage: "100Mi"
+                        limits:
+                            ephemeral-storage: "200Mi"
             '''
             retries 2
         }
