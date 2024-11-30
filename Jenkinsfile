@@ -135,6 +135,7 @@ pipeline {
                         // Run SonarQube analysis with appropriate parameters
                         withSonarQubeEnv('SonarQube') {
                           sh """
+                            which java  // Проверка пути к Java
                             ${scannerHome}/bin/sonar-scanner \
                               -Dsonar.projectKey=sonar-token \
                               -Dsonar.sources=. \
