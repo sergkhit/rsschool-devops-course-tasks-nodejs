@@ -160,14 +160,24 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Application Build') {
+        stage('Application Build and test run') {
             steps {
                 container('docker') {
                     // sh 'apk add --no-cache git'
                     sh "docker build -t ${ECR_REPOSITORY}:${IMAGE_TAG} ."
                     sh 'docker images'
-                    sh 'docker run --rm -p 3000:3000 ${ECR_REPOSITORY}:${IMAGE_TAG}'
-                    // sh "docker build -t nodejs-app:latest -f Dockerfile ."
+                    // sh 'docker run -p 3000:3000 ${ECR_REPOSITORY}:${IMAGE_TAG}'
+                    // sh 'curl http://localhost:3000'
+
+                    // Запуск контейнера в фоновом режиме (с флагом -d)
+                    def containerId = sh(script: "docker run -d -p 3000:3000 ${ECR_REPOSITORY}:${IMAGE_TAG}", returnStdout: true).trim()
+                    echo "Запущен контейнер с ID: ${containerId}"
+                    // Задержка перед отправкой curl запроса
+                    sh 'sleep 10'  // Подождите пару секунд, чтобы приложение успело запуститься
+                    // Запрос к приложению
+                    sh 'curl http://localhost:3000'
+                    // Остановка и удаление контейнера
+                    sh "docker stop ${containerId}"
                 }
             }
         }
