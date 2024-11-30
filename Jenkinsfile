@@ -163,8 +163,11 @@ pipeline {
         stage('Application Build') {
             steps {
                 container('docker') {
-                    // sh "docker build -t ${ECR_REPOSITORY}:${IMAGE_TAG} ."
-                    sh "docker build -t nodejs-app:latest -f Dockerfile ."
+                    // sh 'apk add --no-cache git'
+                    sh "docker build -t ${ECR_REPOSITORY}:${IMAGE_TAG} ."
+                    sh 'docker images'
+                    sh 'docker run --rm -p 3000:3000 ${ECR_REPOSITORY}:${IMAGE_TAG}'
+                    // sh "docker build -t nodejs-app:latest -f Dockerfile ."
                 }
             }
         }
