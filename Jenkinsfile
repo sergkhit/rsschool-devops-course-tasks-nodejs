@@ -115,31 +115,63 @@ pipeline {
             }
         }
 
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         container('docker') {
+        //             script {
+        //             // Install OpenJDK 17 
+        //             sh """
+        //                apk add --no-cache -q openjdk17
+        //                export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+        //                export PATH=$JAVA_HOME/bin:$PATH
+        //                java -version
+        //             """
+
+        //             // Use SonarQubeScanner tool configured in Jenkins
+        //             def scannerHome = tool 'SonarQubeScanner'
+
+        //                 // Run SonarQube analysis with appropriate parameters
+        //                 withSonarQubeEnv('SonarQube') {
+        //                   sh """
+        //                     ${scannerHome}/bin/sonar-scanner \
+        //                       -Dsonar.projectKey=rs-task6-nodejs \
+        //                       -Dsonar.sources=. \
+        //                       -Dsonar.host.url=https://sonarcloud.io \
+        //                       -Dsonar.login=${SONAR_TOKEN} \
+        //                       -Dsonar.organization=${SONAR_ORGANIZATION}
+        //                   """
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+
+
         stage('SonarQube Analysis') {
             steps {
                 container('docker') {
                     script {
-                    // Install OpenJDK 17 
-                    sh """
-                       apk add --no-cache -q openjdk17
-                       export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-                       export PATH=$JAVA_HOME/bin:$PATH
-                       java -version
-                    """
+                        // Ensure Java is installed and configured
+                        sh """
+                          apk add --no-cache -q openjdk17
+                          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+                          export PATH=$JAVA_HOME/bin:$PATH
+                          java -version
+                        """
+                        
+                        // Ensure SonarQube Scanner is configured
+                        def scannerHome = tool 'SonarQubeScanner'
 
-                    // Use SonarQubeScanner tool configured in Jenkins
-                    def scannerHome = tool 'SonarQubeScanner'
-
-                        // Run SonarQube analysis with appropriate parameters
+                        // Run SonarQube analysis
                         withSonarQubeEnv('SonarQube') {
-                          sh """
-                            ${scannerHome}/bin/sonar-scanner \
-                              -Dsonar.projectKey=rs-task6-nodejs \
-                              -Dsonar.sources=. \
-                              -Dsonar.host.url=https://sonarcloud.io \
-                              -Dsonar.login=${SONAR_TOKEN} \
-                              -Dsonar.organization=${SONAR_ORGANIZATION}
-                          """
+                            sh """
+                              ${scannerHome}/bin/sonar-scanner \
+                                -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                                -Dsonar.sources=. \
+                                -Dsonar.host.url=${SONAR_HOST_URL} \
+                                -Dsonar.organization=${SONAR_ORGANIZATION} \
+                                -Dsonar.login=${SONAR_TOKEN}
+                            """
                         }
                     }
                 }
