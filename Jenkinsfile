@@ -149,7 +149,7 @@ pipeline {
                         withSonarQubeEnv('SonarQube') {
                           sh """
                             ${scannerHome}/bin/sonar-scanner \
-                              -Dsonar.projectKey=task-6-word-cloud-generator \
+                              -Dsonar.projectKey=sonar-token \
                               -Dsonar.sources=. \
                               -Dsonar.host.url=https://sonarcloud.io \
                               -Dsonar.login=${SONAR_TOKEN} \
