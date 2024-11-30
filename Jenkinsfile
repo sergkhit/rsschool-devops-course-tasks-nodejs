@@ -156,6 +156,7 @@ pipeline {
                           apk add --no-cache -q openjdk17
                           export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
                           export PATH=$JAVA_HOME/bin:$PATH
+                          ls -l \$JAVA_HOME/bin
                           java -version
                         """
                         
@@ -196,33 +197,6 @@ pipeline {
             }
         }
 
-
-
-
-        // stage('Push Docker Image to ECR') {
-        //     when { expression { params.PUSH_TO_ECR == true } }
-        //     steps {
-        //         script {
-        //             echo "Current Build Result: ${currentBuild.result}"
-        //             echo "PUSH_TO_ECR Value: ${params.PUSH_TO_ECR}"
-        //             if (currentBuild.result != 'FAILURE') {  //Capture success (or unstable)
-        //                 env.PUSH_SUCCESSFUL = true
-        //             } else {
-        //                 env.PUSH_SUCCESSFUL = false // Explicitly set to false on failure
-        //                 }
-        //             container('docker') {
-        //                 withCredentials([aws(credentialsId: "${AWS_CREDENTIALS_ID}")]) {
-        //                     // Log in to ECR
-        //                     sh """
-        //                     aws ecr get-login-password --region ${AWS_REGION} | docker login -u AWS --password-stdin ${ECR_REPOSITORY}
-        //                     """
-        //                 }
-        //                 // Push Docker image to ECR
-        //                 sh "docker push ${ECR_REPOSITORY}:${IMAGE_TAG}"
-        //             }
-        //         }
-        //     }
-        // }
 
 
         stage('Push Docker Image to ECR') {
