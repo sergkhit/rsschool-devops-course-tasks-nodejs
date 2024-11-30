@@ -166,7 +166,7 @@ pipeline {
                     // sh 'apk add --no-cache git'
                     sh "docker build -t ${ECR_REPOSITORY}:${IMAGE_TAG} ."
                     sh 'docker images'
-                    sh 'apt-get update && apt-get install -y curl'
+                    sh 'apk add --no-cache curl'
                     // sh 'docker run -p 3000:3000 ${ECR_REPOSITORY}:${IMAGE_TAG}'
                     // sh 'curl http://localhost:3000'
                     // Запуск контейнера в фоновом режиме (с флагом -d)
