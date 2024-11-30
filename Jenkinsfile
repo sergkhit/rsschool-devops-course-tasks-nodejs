@@ -124,9 +124,10 @@ pipeline {
                     script {
                     // Install OpenJDK 17 if necessary (already in the docker container)
                     sh """
-                      apk add --no-cache -q openjdk17
-                      export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
-                      java -version
+                       apk add --no-cache -q openjdk17
+                       export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+                       export PATH=$JAVA_HOME/bin:$PATH
+                       java -version
                     """
 
                     // Use SonarQubeScanner tool configured in Jenkins
