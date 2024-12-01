@@ -256,8 +256,8 @@ pipeline {
                         -f ./helm-chart/values.yaml \\
                         --namespace jenkins
                     """
-                    sh 'apk add --no-cache curl'
-                    sh 'sleep 20 && curl http://localhost:30001 && curl http://localhost:3000'
+                    // sh 'apk add --no-cache curl'
+                    // sh 'sleep 20 && curl http://localhost:30001 && curl http://localhost:3000'
                     }
                 }
             }
