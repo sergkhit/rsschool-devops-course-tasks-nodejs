@@ -246,7 +246,7 @@ pipeline {
                 script {
 		            MANUAL_STEP_APPROVED = input(
                         message: 'Do you want to proceed with install app from AWS ECR',
-                        parameters: [booleanParam(defaultValue: false, description: '', name: 'Push to AWS ECR')]
+                        parameters: [booleanParam(defaultValue: false, description: '', name: 'install app from AWS ECR')]
                     )
                 container('helm') {
                     sh """
