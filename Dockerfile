@@ -1,30 +1,62 @@
-# Create image based on the official Node 14 image from dockerhub
+# Этап сборки
 FROM node:14 AS builder
 
-# Create a directory where our app will be placed
-RUN mkdir -p /app
-
-# Change directory so that our commands run inside this new directory
+# Создание директории для приложения
 WORKDIR /app
 
-# Copy dependency definitions
-# COPY package*.json /app/
-COPY app/package*.json .
+# Копировать файлы package.json и устанавливать зависимости
+COPY app/package*.json ./
+RUN npm install --only=production  # Устанавливаем только производственные зависимости
 
-# Install dependencies
-RUN npm install
-
-# Get all the code needed to run the app
-# COPY . /app/
+# Копируем весь код приложения
 COPY app/ .
 
-ARG APP_SERVER_PORT
+# Этап продакшн
+FROM node:14-slim  # Используем более легкий образ Node.js
 
+WORKDIR /app
+
+# Копируем только необходимые файлы из этапа сборки
+COPY --from=builder /app .
+
+ARG APP_SERVER_PORT
 ENV PORT $APP_SERVER_PORT
 
-# Start the node server
+# Запуск приложения
 CMD ["npm", "start"]
 
+
+
+############################################################################
+# # Create image based on the official Node 14 image from dockerhub
+# FROM node:14 AS builder
+
+# # Create a directory where our app will be placed
+# RUN mkdir -p /app
+
+# # Change directory so that our commands run inside this new directory
+# WORKDIR /app
+
+# # Copy dependency definitions
+# # COPY package*.json /app/
+# COPY app/package*.json .
+
+# # Install dependencies
+# RUN npm install
+
+
+# # Get all the code needed to run the app
+# # COPY . /app/
+# COPY app/ .
+
+# ARG APP_SERVER_PORT
+
+# ENV PORT $APP_SERVER_PORT
+
+# # Start the node server
+# CMD ["npm", "start"]
+
+###############################################################################
 # # Create image based on the official Node 14 image from dockerhub
 # FROM node:14
 
