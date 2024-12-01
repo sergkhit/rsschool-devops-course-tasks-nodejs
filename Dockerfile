@@ -17,7 +17,7 @@ FROM node:14-slim
 WORKDIR /app
 
 # Копируем только необходимые файлы из этапа сборки
-COPY --from=builder /app .
+COPY app/ .
 
 ARG APP_SERVER_PORT
 ENV PORT $APP_SERVER_PORT
