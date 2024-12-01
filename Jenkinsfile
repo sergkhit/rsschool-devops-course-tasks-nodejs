@@ -279,17 +279,16 @@ pipeline {
         //     }
         // }
 
-        
+
         }
 
 
         post {
         always {
             cleanWs()
-            mail to: 'serg.khitrovo@yandex.ru',
+            mail to: 's.khitrovo@gmail.com',
             subject: "Jenkins Build: ${currentBuild.result}",
             body: "Job: ${env.JOB_NAME} \n Build Number: ${env.BUILD_NUMBER}"
            }
         }
-
 }
