@@ -12,7 +12,7 @@ RUN npm install --only=production  # Устанавливаем только п�
 COPY app/ .
 
 # Этап продакшн
-FROM node:14-slim  # Используем более легкий образ Node.js
+FROM node:14-slim
 
 WORKDIR /app
 
