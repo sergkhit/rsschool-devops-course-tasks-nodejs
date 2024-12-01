@@ -3,6 +3,6 @@ image:
   repository: 905418277051.dkr.ecr.us-east-1.amazonaws.com/nodejs-app-repo
   pullPolicy: IfNotPresent
 service:
-  # type: NodePort
-  type: LoadBalancer
+  type: NodePort
+  # type: LoadBalancer
   port: 3000

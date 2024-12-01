@@ -245,7 +245,7 @@ pipeline {
             steps {
                 script {
 		            MANUAL_STEP_APPROVED = input(
-                        message: 'Do you want to proceed with pushing to AWS ECR',
+                        message: 'Do you want to proceed with install app from AWS ECR',
                         parameters: [booleanParam(defaultValue: false, description: '', name: 'Push to AWS ECR')]
                     )
                 container('helm') {
@@ -257,7 +257,7 @@ pipeline {
                         --namespace jenkins
                     """
                     sh 'apk add --no-cache curl'
-                    sh 'sleep 20 && kubectl get all -n jenkins && kubectl get svc -A && curl http://localhost:30001'
+                    sh 'sleep 20 && curl http://localhost:30001' && curl http://localhost:3000'
                     }
                 }
             }

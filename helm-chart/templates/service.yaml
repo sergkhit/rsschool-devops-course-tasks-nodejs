@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}
 spec:
-  # type: NodePort
-  type: LoadBalancer
+  type: NodePort
+  # type: LoadBalancer
   ports:
     - port: 3000
       targetPort: 3000
-      # nodePort: 30001
+      nodePort: 30001
   selector:
     app: {{ .Release.Name }}
